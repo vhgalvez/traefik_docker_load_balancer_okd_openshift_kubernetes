@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  traefik:
+    image: traefik:v3.1
+    command:
+      - --api.insecure=true
+      - --providers.docker
+      - --entrypoints.http.address=:80
+      - --entrypoints.https.address=:443
+      - --certificatesresolvers.myresolver.acme.email=your-email@example.com
+      - --certificatesresolvers.myresolver.acme.storage=acme.json
+      - --certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=http
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+      - "6443:6443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/traefik/traefik.toml:/traefik.toml
+      - /etc/traefik/acme.json:/acme.json
+      - /etc/traefik/ssl:/etc/traefik/ssl
+      - /etc/traefik/custom-ca:/usr/local/share/ca-certificates
+      - /etc/traefik/custom-ca:/etc/pki/ca-trust/source/anchors/
+    restart: always
