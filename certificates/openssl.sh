@@ -1,4 +1,10 @@
 #!/bin/bash
+sudo mkdir -p /etc/traefik/ssl
+sudo mkdir -p /etc/traefik/custom-ca
+sudo mkdir -p /etc/myCA
+sudo chmod 700 /etc/traefik/custom-ca
+sudo chmod 700 /etc/traefik/ssl
+sudo cp /etc/traefik/custom-ca/myCA.pem /etc/myCA
 
 # Crear el archivo de configuración de OpenSSL (extfile.cnf)
 echo "Creando archivo de configuración de OpenSSL: /etc/traefik/ssl/extfile.cnf"
