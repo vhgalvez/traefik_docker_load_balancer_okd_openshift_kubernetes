@@ -7,6 +7,8 @@ sudo mkdir -p /etc/pki/ca-trust/source/anchors
 sudo chmod 700 /etc/traefik
 sudo chmod 700 /etc/traefik/custom-ca
 sudo chmod 700 /etc/traefik/ssl
+sudo chmod 755 /etc/traefik/
+sudo chmod 755 /etc/traefik/ssl
 
 # Eliminar archivos CA anteriores si existen
 sudo rm -f /etc/traefik/custom-ca/myCA.pem /etc/traefik/custom-ca/myCA.key /etc/traefik/custom-ca/myCA.srl
@@ -26,10 +28,18 @@ if [[ $? -ne 0 ]]; then
     exit 1
 fi
 
-
 # Copiar el certificado de la CA a anchors y actualizar el almacén de confianza del sistema
 sudo cp /etc/traefik/custom-ca/myCA.pem /etc/pki/ca-trust/source/anchors/
+if [[ $? -ne 0 ]]; then
+    echo "Error al copiar el certificado CA a anchors."
+    exit 1
+fi
 
+sudo update-ca-trust extract
+if [[ $? -ne 0 ]]; then
+    echo "Error al actualizar el almacén de confianza del sistema."
+    exit 1
+fi
 
 # Crear archivo de configuración de OpenSSL
 echo "Creando archivo de configuración de OpenSSL: /etc/traefik/ssl/extfile.cnf"
@@ -77,4 +87,10 @@ if [[ $? -ne 0 ]]; then
     exit 1
 fi
 
+# Ajustar permisos de los archivos
+sudo chmod 644 /etc/traefik/ssl/*.crt
+sudo chmod 600 /etc/traefik/ssl/*.key 
+
 echo "Certificado generado correctamente en /etc/traefik/ssl/cefaslocalserver.com.crt"
+
+exit 0
