@@ -50,6 +50,10 @@
       url = "http://10.17.3.22:6443"
     [[http.services.k8sApi.loadBalancer.servers]]
       url = "http://10.17.3.23:6443"
+      
+
+[http.routers.k8sApi.tls]
+  certResolver = "myresolver"
 
 [tls]
   [[tls.certificates]]
