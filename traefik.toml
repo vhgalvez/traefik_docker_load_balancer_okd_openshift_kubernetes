@@ -38,7 +38,7 @@
     service = "k8sApi"
     rule = "Host(`api.local.cefaslocalserver.com`)"
     [http.routers.k8sApi.tls]
-      certResolver = "myresolver"  # Aquí no debe haber saltos de línea
+      certResolver = "myresolver"
 
 [http.services]
   [http.services.k8sApi.loadBalancer]
