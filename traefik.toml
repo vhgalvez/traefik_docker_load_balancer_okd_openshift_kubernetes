@@ -3,15 +3,21 @@
     address = ":80"
     [entryPoints.web.http.redirections.entryPoint]
       to = "websecure"
-      scheme = "https"
+      scheme = "https"  # Redirect HTTP to HTTPS
 
   [entryPoints.websecure]
     address = ":443"
+    [entryPoints.websecure.http]
+      redirections = true
 
   [entryPoints.k8sApi]
     address = ":6443"
-    [entryPoints.k8sApi.tls]
-      certResolver = "myresolver"
+    [entryPoints.k8sApi.http]
+      redirections = true
+
+[api]
+  dashboard = true
+  insecure = false  # Secure the dashboard with HTTPS
 
 [providers.docker]
   endpoint = "unix:///var/run/docker.sock"
@@ -24,7 +30,7 @@
   email = "your-email@example.com"
   storage = "acme.json"
   [certificatesResolvers.myresolver.acme.httpChallenge]
-    entryPoint = "web"
+    entryPoint = "web"  # HTTP challenge for issuing certificates
 
 [http.routers]
   [http.routers.api]
