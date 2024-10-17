@@ -7,13 +7,9 @@
 
   [entryPoints.websecure]
     address = ":443"
-    [entryPoints.websecure.http]
-      redirections = true
 
   [entryPoints.k8sApi]
     address = ":6443"
-    [entryPoints.k8sApi.http]
-      redirections = true
 
 [api]
   dashboard = true
@@ -26,11 +22,13 @@
 [log]
   level = "DEBUG"
 
+[accessLog]
+
 [certificatesResolvers.myresolver.acme]
   email = "your-email@example.com"
   storage = "acme.json"
   [certificatesResolvers.myresolver.acme.httpChallenge]
-    entryPoint = "web"  # HTTP challenge for issuing certificates
+    entryPoint = "web"
 
 [http.routers]
   [http.routers.api]
