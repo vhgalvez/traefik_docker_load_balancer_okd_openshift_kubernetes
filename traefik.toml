@@ -5,10 +5,12 @@
   [entryPoints.websecure]
     address = ":443"
     [entryPoints.websecure.tls]
+      certResolver = "myresolver"  # Added certResolver for websecure
 
   [entryPoints.k8sApi]
     address = ":6443"
     [entryPoints.k8sApi.tls]
+      certResolver = "myresolver"  # Added certResolver for k8sApi
 
 [api]
   dashboard = true
@@ -52,3 +54,8 @@
       url = "http://10.17.3.22:6443"
     [[http.services.k8sApi.loadBalancer.servers]]
       url = "http://10.17.3.23:6443"
+
+[tls]
+  [[tls.certificates]]
+    certFile = "/etc/traefik/ssl/cefaslocalserver.com.crt"
+    keyFile = "/etc/traefik/ssl/cefaslocalserver.com.key"
