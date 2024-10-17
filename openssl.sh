@@ -22,7 +22,7 @@ if [[ ! -f /etc/traefik/custom-ca/myCA.pem || ! -f /etc/traefik/custom-ca/myCA.k
         echo "Error al generar la clave privada de la CA."
         exit 1
     fi
-    
+
     # Crear el certificado de la CA
     sudo openssl req -x509 -new -nodes -key /etc/traefik/custom-ca/myCA.key -sha256 -days 1024 -out /etc/traefik/custom-ca/myCA.pem -subj "/CN=MyCustomCA"
     if [[ $? -ne 0 ]]; then
