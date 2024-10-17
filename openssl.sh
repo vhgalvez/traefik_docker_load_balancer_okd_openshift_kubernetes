@@ -30,6 +30,7 @@ sudo cp /etc/traefik/custom-ca/myCA.pem /etc/myCA
 
 # Crear archivo de configuración de OpenSSL
 echo "Creando archivo de configuración de OpenSSL: /etc/traefik/ssl/extfile.cnf"
+
 cat > /etc/traefik/ssl/extfile.cnf <<EOF
 [ req ]
 distinguished_name = req_distinguished_name
