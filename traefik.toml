@@ -1,12 +1,14 @@
 [entryPoints]
   [entryPoints.web]
     address = ":80"
-  
+
   [entryPoints.websecure]
     address = ":443"
-  
+    [entryPoints.websecure.tls]
+
   [entryPoints.k8sApi]
     address = ":6443"
+    [entryPoints.k8sApi.tls]
 
 [api]
   dashboard = true
@@ -32,6 +34,8 @@
     entryPoints = ["websecure"]
     service = "api@internal"
     rule = "Host(`load_balancer1.cefaslocalserver.com`)"
+    [http.routers.api.tls]
+      certResolver = "myresolver"
 
   [http.routers.k8sApi]
     entryPoints = ["k8sApi"]
@@ -43,13 +47,8 @@
 [http.services]
   [http.services.k8sApi.loadBalancer]
     [[http.services.k8sApi.loadBalancer.servers]]
+      url = "http://10.17.3.21:6443"
+    [[http.services.k8sApi.loadBalancer.servers]]
       url = "http://10.17.3.22:6443"
     [[http.services.k8sApi.loadBalancer.servers]]
       url = "http://10.17.3.23:6443"
-    [[http.services.k8sApi.loadBalancer.servers]]
-      url = "http://10.17.3.24:6443"
-
-[tls]
-  [[tls.certificates]]
-    certFile = "/etc/traefik/ssl/cefaslocalserver.com.crt"
-    keyFile = "/etc/traefik/ssl/cefaslocalserver.com.key"
