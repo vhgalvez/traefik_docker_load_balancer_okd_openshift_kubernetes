@@ -51,9 +51,14 @@ sudo cp -r /$PWD/* /etc/traefik/
 Si es necesario generar un certificado personalizado para tu dominio, asegúrate de que el script `openssl.sh` está preparado y luego ejecútalo:
 
 ```bash
-sudo chmod +x ./openssl.sh
-sudo ./openssl.sh
+sudo chmod +x certificate.sh
+sudo ./certificate.sh
 ```
+
+
+
+
+
 
 Esto generará los certificados necesarios para tu dominio en `/etc/traefik/ssl/`.
 
