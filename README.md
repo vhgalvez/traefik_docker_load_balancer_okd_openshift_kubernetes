@@ -5,6 +5,9 @@ traefik_docker_load_balancer_okd_openshift_kubernetes
 ## Description
 
 
+sudo cp custom-ca/myCA.crt /etc/pki/ca-trust/source/anchors/
+
+sudo update-ca-trust
 
 
 
@@ -32,5 +35,21 @@ sudo cp -r /$PWD/*  /etc/traefik/
 ```bash
 sudo chmod +x ./openssl.sh
 sudo ./openssl.sh
+```
 
+```bash
+sudo cp custom-ca/myCA.crt /etc/pki/ca-trust/source/anchors/
+```
+
+
+```bash
+sudo update-ca-trust
+
+3. Start Traefik
+4. 
+Run the following command to start Traefik with Docker Compose:
+
+bash
+Copiar código
+docker-compose down && docker-compose up -d
 
