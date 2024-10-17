@@ -22,5 +22,5 @@ services:
       - /etc/traefik/acme.json:/acme.json
       - /etc/traefik/ssl:/etc/traefik/ssl
       - /etc/traefik/custom-ca:/usr/local/share/ca-certificates
-      - /etc/traefik/custom-ca:/etc/pki/ca-trust/source/anchors/
+      - /etc/myCA:/etc/pki/ca-trust/source/anchors/
     restart: always

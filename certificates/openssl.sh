@@ -1,12 +1,22 @@
 #!/bin/bash
+
+# Crear directorios necesarios con permisos adecuados
 sudo mkdir -p /etc/traefik/ssl
 sudo mkdir -p /etc/traefik/custom-ca
-sudo mkdir -p /etc/myCA
 sudo chmod 700 /etc/traefik/custom-ca
 sudo chmod 700 /etc/traefik/ssl
+
+# Verificar que los archivos CA existan
+if [[ ! -f /etc/traefik/custom-ca/myCA.pem || ! -f /etc/traefik/custom-ca/myCA.key ]]; then
+  echo "Los archivos myCA.pem o myCA.key no existen en /etc/traefik/custom-ca. Por favor, verifica."
+  exit 1
+fi
+
+# Copiar el CA a /etc/myCA
+sudo mkdir -p /etc/myCA
 sudo cp /etc/traefik/custom-ca/myCA.pem /etc/myCA
 
-# Crear el archivo de configuración de OpenSSL (extfile.cnf)
+# Crear archivo de configuración de OpenSSL
 echo "Creando archivo de configuración de OpenSSL: /etc/traefik/ssl/extfile.cnf"
 cat > /etc/traefik/ssl/extfile.cnf <<EOF
 [ req ]
