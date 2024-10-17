@@ -8,34 +8,28 @@ sudo chmod 700 /etc/traefik
 sudo chmod 700 /etc/traefik/custom-ca
 sudo chmod 700 /etc/traefik/ssl
 
-# Copiar el certificado de la CA a anchors y actualizar el almacén de confianza del sistema
-sudo cp custom-ca/myCA.crt /etc/pki/ca-trust/source/anchors/
-sudo update-ca-trust extract
+# Eliminar archivos CA anteriores si existen
+sudo rm -f /etc/traefik/custom-ca/myCA.pem /etc/traefik/custom-ca/myCA.key /etc/traefik/custom-ca/myCA.srl
 
-# Verificar si los archivos CA ya existen; si no, generarlos
-if [[ ! -f /etc/traefik/custom-ca/myCA.pem || ! -f /etc/traefik/custom-ca/myCA.key ]]; then
-    echo "Generando myCA.pem y myCA.key en /etc/traefik/custom-ca..."
-    
-    # Generar la clave privada de la CA
-    sudo openssl genrsa -out /etc/traefik/custom-ca/myCA.key 4096
-    if [[ $? -ne 0 ]]; then
-        echo "Error al generar la clave privada de la CA."
-        exit 1
-    fi
-
-    # Crear el certificado de la CA
-    sudo openssl req -x509 -new -nodes -key /etc/traefik/custom-ca/myCA.key -sha256 -days 1024 -out /etc/traefik/custom-ca/myCA.pem -subj "/CN=MyCustomCA"
-    if [[ $? -ne 0 ]]; then
-        echo "Error al generar el certificado de la CA."
-        exit 1
-    fi
-else
-    echo "Los archivos myCA.pem y myCA.key ya existen en /etc/traefik/custom-ca. Saltando generación de CA."
+# Generar la clave privada de la CA
+echo "Generando myCA.pem y myCA.key en /etc/traefik/custom-ca..."
+sudo openssl genrsa -out /etc/traefik/custom-ca/myCA.key 4096
+if [[ $? -ne 0 ]]; then
+    echo "Error al generar la clave privada de la CA."
+    exit 1
 fi
 
-# Copiar el CA a /etc/myCA
-sudo mkdir -p /etc/myCA
-sudo cp /etc/traefik/custom-ca/myCA.pem /etc/myCA
+# Crear el certificado de la CA
+sudo openssl req -x509 -new -nodes -key /etc/traefik/custom-ca/myCA.key -sha256 -days 1024 -out /etc/traefik/custom-ca/myCA.pem -subj "/CN=MyCustomCA"
+if [[ $? -ne 0 ]]; then
+    echo "Error al generar el certificado de la CA."
+    exit 1
+fi
+
+
+# Copiar el certificado de la CA a anchors y actualizar el almacén de confianza del sistema
+sudo cp /etc/traefik/custom-ca/myCA.pem /etc/pki/ca-trust/source/anchors/
+
 
 # Crear archivo de configuración de OpenSSL
 echo "Creando archivo de configuración de OpenSSL: /etc/traefik/ssl/extfile.cnf"
