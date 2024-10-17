@@ -1,9 +1,11 @@
+# EntryPoints define the available ports and protocols for Traefik
 [entryPoints]
   [entryPoints.web]
     address = ":80"
     [entryPoints.web.http.redirections.entryPoint]
       to = "websecure"
-      scheme = "https"  # Redirect HTTP to HTTPS
+      scheme = "https"
+      permanent = true
 
   [entryPoints.websecure]
     address = ":443"
@@ -11,26 +13,33 @@
   [entryPoints.k8sApi]
     address = ":6443"
 
+# API dashboard settings
 [api]
   dashboard = true
-  insecure = false  # Secure the dashboard with HTTPS
+  insecure = false  # Ensure the dashboard is secured by TLS
 
+# Providers section to monitor Docker containers
 [providers.docker]
   endpoint = "unix:///var/run/docker.sock"
   exposedByDefault = false
 
+# Enable logging and set to DEBUG for detailed information
 [log]
   level = "DEBUG"
 
+# Enable access logging
 [accessLog]
 
+# Let's Encrypt configuration for ACME certificates
 [certificatesResolvers.myresolver.acme]
   email = "your-email@example.com"
   storage = "acme.json"
   [certificatesResolvers.myresolver.acme.httpChallenge]
-    entryPoint = "web"
+    entryPoint = "web"  # ACME uses the web entrypoint for HTTP-01 challenge
 
+# HTTP Routers and services configuration
 [http.routers]
+  # Router for Traefik API dashboard
   [http.routers.api]
     entryPoints = ["websecure"]
     service = "api@internal"
@@ -38,13 +47,18 @@
     [http.routers.api.tls]
       certResolver = "myresolver"
 
+  # Router for Kubernetes API
   [http.routers.k8sApi]
     entryPoints = ["k8sApi"]
     service = "k8sApi"
     rule = "Host(`api.local.cefaslocalserver.com`)"
     [http.routers.k8sApi.tls]
       certResolver = "myresolver"
+      [[http.routers.k8sApi.tls.certificates]]
+        certFile = "/etc/traefik/ssl/cefaslocalserver.com.crt"
+        keyFile  = "/etc/traefik/ssl/cefaslocalserver.com.key"
 
+# HTTP Services for the Kubernetes API
 [http.services]
   [http.services.k8sApi.loadBalancer]
     [[http.services.k8sApi.loadBalancer.servers]]
@@ -54,6 +68,7 @@
     [[http.services.k8sApi.loadBalancer.servers]]
       url = "https://10.17.3.23:6443"
 
+# Global TLS settings
 [tls]
   [[tls.certificates]]
     certFile = "/etc/traefik/ssl/cefaslocalserver.com.crt"
