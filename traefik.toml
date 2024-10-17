@@ -4,13 +4,17 @@
 
   [entryPoints.websecure]
     address = ":443"
+    [entryPoints.websecure.http]
+      redirections = true  # Optional: Redirect HTTP to HTTPS
 
   [entryPoints.k8sApi]
     address = ":6443"
+    [entryPoints.k8sApi.tls]
+      certResolver = "myresolver"  # Ensure TLS is enabled for Kubernetes API
 
 [api]
   dashboard = true
-  insecure = true
+  insecure = false  # Make sure the dashboard is secure. Only accessible via HTTPS.
 
 [providers.docker]
   endpoint = "unix:///var/run/docker.sock"
@@ -50,10 +54,6 @@
       url = "http://10.17.3.22:6443"
     [[http.services.k8sApi.loadBalancer.servers]]
       url = "http://10.17.3.23:6443"
-      
-
-[http.routers.k8sApi.tls]
-  certResolver = "myresolver"
 
 [tls]
   [[tls.certificates]]
