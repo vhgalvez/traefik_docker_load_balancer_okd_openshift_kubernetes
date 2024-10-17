@@ -9,7 +9,4 @@
 
 ## Description
 
- sudo cp -r /$PWD/*  /etc/traefik/
-
-
- 
+sudo cp -r /$PWD/*  /etc/traefik/
