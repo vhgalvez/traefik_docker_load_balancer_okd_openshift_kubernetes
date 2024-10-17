@@ -13,16 +13,22 @@ sudo update-ca-trust
 
 ## Installation
 
+
 sudo mkdir -p /etc/traefik/custom-ca
+
 cd /etc/traefik/custom-ca
+
 
 # Generar la clave privada de la CA
 sudo openssl genrsa -out myCA.key 4096
+
 
 # Crear el certificado de la CA
 sudo openssl req -x509 -new -nodes -key myCA.key -sha256 -days 1024 -out myCA.pem -subj "/CN=MyCustomCA"
 
 
+
+# Crear el certificado de la CA en formato CRT
 
 ```bash
 sudo cp -r /$PWD/*  /etc/traefik/

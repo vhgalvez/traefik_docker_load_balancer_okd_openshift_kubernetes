@@ -1,10 +1,15 @@
 #!/bin/bash
 
+# Instalar OpenSSL
 # Crear directorios necesarios con permisos adecuados
 sudo mkdir -p /etc/traefik/ssl
 sudo mkdir -p /etc/traefik/custom-ca
+sudo mkdir -p /etc/pki/ca-trust/source/anchors
+sudo chmod 700 /etc/traefik
 sudo chmod 700 /etc/traefik/custom-ca
 sudo chmod 700 /etc/traefik/ssl
+sudo cp custom-ca/myCA.crt /etc/pki/ca-trust/source/anchors/
+
 
 # Verificar si los archivos CA ya existen; si no, generarlos
 if [[ ! -f /etc/traefik/custom-ca/myCA.pem || ! -f /etc/traefik/custom-ca/myCA.key ]]; then
