@@ -1,19 +1,16 @@
 [entryPoints]
-  # HTTP Entrypoint (port 80)
   [entryPoints.web]
     address = ":80"
-
-  # HTTPS Entrypoint (port 443)
+  
   [entryPoints.websecure]
     address = ":443"
-
-  # Kubernetes API Entrypoint (port 6443)
+  
   [entryPoints.k8sApi]
     address = ":6443"
 
 [api]
   dashboard = true
-  insecure = true  # Cambia a false si deseas habilitar seguridad en el dashboard
+  insecure = true
 
 [providers.docker]
   endpoint = "unix:///var/run/docker.sock"
@@ -25,40 +22,34 @@
 [accessLog]
 
 [certificatesResolvers.myresolver.acme]
-  email = "your-email@example.com"  # Sustituye por tu correo electrónico
+  email = "your-email@example.com"
   storage = "acme.json"
   [certificatesResolvers.myresolver.acme.httpChallenge]
     entryPoint = "web"
 
 [http.routers]
-  # Router para el dashboard de Traefik
   [http.routers.api]
     entryPoints = ["websecure"]
     service = "api@internal"
     rule = "Host(`load_balancer1.cefaslocalserver.com`)"
-    tls = {}
 
-  # Router para el API de OpenShift (Kubernetes API)
   [http.routers.k8sApi]
     entryPoints = ["k8sApi"]
     service = "k8sApi"
     rule = "Host(`api.local.cefaslocalserver.com`)"
-    tls = {
-      certResolver = "myresolver"
-    }
+    [http.routers.k8sApi.tls]
+      certResolver = "myresolver"  # Aquí no debe haber saltos de línea
 
 [http.services]
-  # Servicio para el API de OpenShift (Kubernetes API)
   [http.services.k8sApi.loadBalancer]
-    [[http.services.k8sApi.loadBalancer.servers]]
-      url = "http://10.17.3.21:6443"
     [[http.services.k8sApi.loadBalancer.servers]]
       url = "http://10.17.3.22:6443"
     [[http.services.k8sApi.loadBalancer.servers]]
       url = "http://10.17.3.23:6443"
+    [[http.services.k8sApi.loadBalancer.servers]]
+      url = "http://10.17.3.24:6443"
 
 [tls]
   [[tls.certificates]]
     certFile = "/etc/traefik/ssl/cefaslocalserver.com.crt"
     keyFile = "/etc/traefik/ssl/cefaslocalserver.com.key"
-
