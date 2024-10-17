@@ -42,6 +42,7 @@
     entryPoints = ["k8sApi"]
     service = "k8sApi"
     rule = "Host(`api.local.cefaslocalserver.com`)"
+    tls = true  # Forzar uso de TLS para esta ruta
 
 [http.services]
   # Servicio para el API de OpenShift (Control planes)
@@ -54,6 +55,18 @@
       url = "http://10.17.3.24:6443"
 
 [tls]
+  # Configurar el certificado personalizado para el entrypoint k8sApi
   [[tls.certificates]]
     certFile = "/etc/traefik/ssl/cefaslocalserver.com.crt"
     keyFile = "/etc/traefik/ssl/cefaslocalserver.com.key"
+
+  [tls.stores]
+    [tls.stores.default]
+      [tls.stores.default.defaultCertificate]
+        certFile = "/etc/traefik/ssl/cefaslocalserver.com.crt"
+        keyFile  = "/etc/traefik/ssl/cefaslocalserver.com.key"
+
+  # Opciones TLS adicionales
+  [[tls.options]]
+    [tls.options.default]
+      sniStrict = true  # Forzar coincidencia estricta de nombre de host
