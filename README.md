@@ -80,7 +80,7 @@ Verifica que el archivo `traefik.toml` esté configurado para usar los certifica
 Utiliza Docker Compose para iniciar Traefik con la configuración correcta. Para reiniciar o levantar Traefik, ejecuta:
 
 ```bash
-docker-compose down && docker-compose up -d
+sudo docker-compose down && sudo docker-compose up -d
 ```
 
 ## Verificación
