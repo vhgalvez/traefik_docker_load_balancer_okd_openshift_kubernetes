@@ -4,15 +4,9 @@
 
   [entryPoints.websecure]
     address = ":443"
-    [entryPoints.websecure.tls]
-      certFile = "/etc/traefik/ssl/cefaslocalserver.com.crt"
-      keyFile = "/etc/traefik/ssl/cefaslocalserver.com.key"
 
   [entryPoints.k8sApi]
     address = ":6443"
-    [entryPoints.k8sApi.tls]
-      certFile = "/etc/traefik/ssl/cefaslocalserver.com.crt"
-      keyFile = "/etc/traefik/ssl/cefaslocalserver.com.key"
 
 [api]
   dashboard = true
