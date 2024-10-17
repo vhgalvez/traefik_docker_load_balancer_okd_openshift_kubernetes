@@ -1,37 +1,34 @@
 [entryPoints]
   [entryPoints.web]
     address = ":80"
-    # Optional redirection from HTTP to HTTPS
     [entryPoints.web.http.redirections.entryPoint]
       to = "websecure"
-      scheme = "https"
+      scheme = "https"  # Redirect HTTP to HTTPS
 
   [entryPoints.websecure]
     address = ":443"
 
   [entryPoints.k8sApi]
     address = ":6443"
-    [entryPoints.k8sApi.tls]
-      certResolver = "myresolver"
 
 [api]
   dashboard = true
-  insecure = false  # Ensure the dashboard is only available over HTTPS
+  insecure = false  # Secure dashboard via HTTPS
 
 [providers.docker]
   endpoint = "unix:///var/run/docker.sock"
-  exposedByDefault = false  # Keep this false to ensure only explicitly defined services are exposed
+  exposedByDefault = false
 
 [log]
   level = "DEBUG"
 
-[accessLog]  # Enable access logs for visibility
+[accessLog]
 
 [certificatesResolvers.myresolver.acme]
   email = "your-email@example.com"
   storage = "acme.json"
   [certificatesResolvers.myresolver.acme.httpChallenge]
-    entryPoint = "web"  # Use web entry point for HTTP challenge
+    entryPoint = "web"  # HTTP challenge for certificate issuance
 
 [http.routers]
   [http.routers.api]
@@ -51,7 +48,7 @@
 [http.services]
   [http.services.k8sApi.loadBalancer]
     [[http.services.k8sApi.loadBalancer.servers]]
-      url = "https://10.17.3.21:6443"  # Use HTTPS for API servers
+      url = "https://10.17.3.21:6443"
     [[http.services.k8sApi.loadBalancer.servers]]
       url = "https://10.17.3.22:6443"
     [[http.services.k8sApi.loadBalancer.servers]]
